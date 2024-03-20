@@ -8,7 +8,7 @@ import Backdrop from "../UIElements/Backdrop";
 import "./MainNavigation.css";
 
 const MainNavigation = (props) => {
-  const [drawerisOpen, setDrawerIsOpen] = useState(false);
+  const [drawerIsOpen, setDrawerIsOpen] = useState(false);
 
   const openDrawer = () => {
     setDrawerIsOpen(true);
@@ -20,14 +20,13 @@ const MainNavigation = (props) => {
 
   return (
     <React.Fragment>
-      {drawerisOpen && <Backdrop onClick={closeDrawer} />}
-      {drawerisOpen && (
-        <SideDrawer>
-          <nav className="main-navigation__drawer-nav">
-            <NavLinks />
-          </nav>
-        </SideDrawer>
-      )}
+      {drawerIsOpen && <Backdrop onClick={closeDrawer} />}
+      <SideDrawer show={drawerIsOpen}>
+        <nav className="main-navigation__drawer-nav">
+          <NavLinks />
+        </nav>
+      </SideDrawer>
+
       <MainHeader>
         <button className="main-navigation__menu-btn" onClick={openDrawer}>
           <span />
