@@ -6,17 +6,19 @@ import "./UserList.css";
 
 const UsersList = (props) => {
   return (
-    <ul>
+    <>
       {props.items.length ? (
         props.items.map((user) => {
           return (
-            <UserItem
-              key={user.id}
-              id={user.id}
-              image={user.image}
-              name={user.name}
-              placeCount={user.places}
-            />
+            <ul className="users-list">
+              <UserItem
+                key={user.id}
+                id={user.id}
+                image={user.image}
+                name={user.name}
+                placeCount={user.places}
+              />
+            </ul>
           );
         })
       ) : (
@@ -26,7 +28,7 @@ const UsersList = (props) => {
           </Card>
         </div>
       )}
-    </ul>
+    </>
   );
 };
 
