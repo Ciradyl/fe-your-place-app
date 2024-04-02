@@ -7,8 +7,8 @@ export const DUMMY_PLACES = [
       "https://upload.wikimedia.org/wikipedia/commons/c/c5/World_Trade_Center%2C_New_York_City_-_aerial_view_%28March_2001%29.jpg",
     address: "Manhattan, New York, NY 10001",
     coordinates: {
-      lat: 40.7127,
-      lng: 74.0134,
+      lat: 40.71288220988469,
+      lng:-74.01339054302295,
     },
     creatorId: "u1",
   },
@@ -20,8 +20,8 @@ export const DUMMY_PLACES = [
       "https://upload.wikimedia.org/wikipedia/commons/c/c5/World_Trade_Center%2C_New_York_City_-_aerial_view_%28March_2001%29.jpg",
     address: "Manhattan, New York, NY 10001",
     coordinates: {
-      lat: 40.7127,
-      lng: 74.0134,
+      lat: 40.71288220988469,
+      lng:-74.01339054302295,
     },
     creatorId: "u2",
   },
