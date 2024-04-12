@@ -14,7 +14,7 @@ export const DUMMY_PLACES = [
   },
   {
     id: "p2",
-    title: "World Trade Center",
+    title: "911",
     description: "One of the most famous sky scrappers in the world!",
     imageUrl:
       "https://upload.wikimedia.org/wikipedia/commons/c/c5/World_Trade_Center%2C_New_York_City_-_aerial_view_%28March_2001%29.jpg",

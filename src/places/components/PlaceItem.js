@@ -9,9 +9,23 @@ import "./PlaceItem.css";
 
 const PlaceItem = (props) => {
   const [showMap, setShowMap] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const openMapHandler = () => setShowMap(true);
   const closeMapHandler = () => setShowMap(false);
+
+  const showDeleteModalHandler = () => {
+    setShowDeleteModal(true);
+  };
+
+  const cancelDeleteModalHandler = () => {
+    setShowDeleteModal(false);
+  };
+
+  const deletePlaceHandler = () => {
+    setShowDeleteModal(false)
+    console.log("Deleted");
+  };
 
   return (
     <>
@@ -31,12 +45,12 @@ const PlaceItem = (props) => {
               View on Map
             </Button>
             <Button to={`/places/${props.id}`}>Edit</Button>
-            <Button>Delete</Button>
+            <Button onClick={showDeleteModalHandler}>Delete</Button>
           </div>
         </Card>
       </li>
 
-            {/* Modal section */}
+      {/* Map Modal section */}
       <Modal
         show={showMap}
         onCancel={closeMapHandler}
@@ -48,6 +62,28 @@ const PlaceItem = (props) => {
         <div className="map-container">
           <Map center={props.coordinates} zoom={15} />
         </div>
+      </Modal>
+
+      {/* Deletion Modal section */}
+      <Modal
+        show={showDeleteModal}
+        onCancel={cancelDeleteModalHandler}
+        header="Are you sure?"
+        footerClass="place-item__modal-actions"
+        footer={
+          <>
+            <Button inverse onClick={deletePlaceHandler}>
+              {" "}
+              Delete
+            </Button>
+            <Button onClick={cancelDeleteModalHandler}>
+              {" "}
+              Cancel
+            </Button>
+          </>
+        }
+      >
+        <p>Do you want to delete this place?</p>
       </Modal>
     </>
   );
