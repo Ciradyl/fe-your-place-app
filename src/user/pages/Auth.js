@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 import Input from "../../shared/components/FormElements/Input";
 import Card from "../../shared/components/UIElements/Card";
@@ -9,9 +9,11 @@ import {
   VALIDATOR_REQUIRE,
 } from "../../shared/util/validators";
 import { useForm } from "../../shared/hooks/form-hook";
+import { AUTHENTICATION_CONTEXT } from "../../shared/context/auth-context";
 import "./Auth.css";
 
 const Auth = () => {
+  const auth = useContext(AUTHENTICATION_CONTEXT);
   const [isLoginMode, setIsLoginMode] = useState(true);
 
   const [formState, inputHandler, setFormData] = useForm(
@@ -51,6 +53,7 @@ const Auth = () => {
   const authSubmitFormHandler = (e) => {
     e.preventDefault();
     console.log("Logged In", formState.inputs);
+    auth.login()
   };
 
   return (
@@ -63,7 +66,7 @@ const Auth = () => {
             element="input"
             type="text"
             label="Nickname"
-            validators={[VALIDATOR_REQUIRE]}
+            validators={[VALIDATOR_REQUIRE()]}
             errorText="Please enter a valid nickname."
             onInput={inputHandler}
           />
