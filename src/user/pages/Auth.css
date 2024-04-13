@@ -1,0 +1,32 @@
+.authentication__header {
+  color: white;
+  text-align: left;
+}
+
+
+.authentication {
+  width: 90%;
+  max-width: 25rem;
+  margin: 7rem auto;
+  text-align: left;
+}
+
+.authentication form {
+  margin-bottom: 1rem
+}
+
+.authentication__register-container {
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.authentication__register-container p {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+  display: inline;
+}
+
+.container p:hover {
+  color: darkblue;
+}
