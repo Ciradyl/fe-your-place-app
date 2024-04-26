@@ -1,6 +1,10 @@
 import React, { useState, useContext } from "react";
 
-import { Card } from "../../shared/components/UIElements/__index__";
+import {
+  Card,
+  ErrorModal,
+  LoadingSpinner,
+} from "../../shared/components/UIElements/__index__";
 import { Button, Input } from "../../shared/components/FormElements/__index__";
 import {
   VALIDATOR_EMAIL,
@@ -54,13 +58,36 @@ const Auth = () => {
 
   const authSubmitFormHandler = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     if (isLoginMode) {
+      try {
+        const response = await fetch(YOUR_PLACE_API_URLS.LOGIN, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            emailAddress: formState.inputs.emailAddress.value,
+            password: formState.inputs.password.value,
+          }),
+        });
+        const data = await response.json();
+        
+        if (!response.ok) {
+          // if not status 200
+          throw new Error(data.message);
+        }
+        setIsLoading(false);
+        auth.login();
+      } catch (e) {
+        setIsLoading(false);
+        setErrorOccured(e.message || "Something went wrong, please try again.");
+      }
     }
 
     if (!isLoginMode) {
       try {
-        setIsLoading(true);
         const response = await fetch(YOUR_PLACE_API_URLS.SIGNUP, {
           method: "POST",
           headers: {
@@ -73,7 +100,11 @@ const Auth = () => {
           }),
         });
         const data = await response.json();
-        console.log(data);
+
+        if (!response.ok) {
+          // if not status 200
+          throw new Error(data.message);
+        }
         setIsLoading(false);
         auth.login();
       } catch (e) {
@@ -83,56 +114,64 @@ const Auth = () => {
     }
   };
 
+  const errorHandler = () => {
+    setErrorOccured(null);
+  };
+
   return (
-    <Card className="authentication">
-      {isLoginMode ? <h2>Log In</h2> : <h2>Create Your new Account</h2>}
-      <form onSubmit={authSubmitFormHandler}>
-        {!isLoginMode && (
+    <>
+      <ErrorModal error={errorOccured} onClear={errorHandler} />
+      <Card className="authentication">
+        {isLoading && <LoadingSpinner asOverlay />}
+        {isLoginMode ? <h2>Log In</h2> : <h2>Create Your new Account</h2>}
+        <form onSubmit={authSubmitFormHandler}>
+          {!isLoginMode && (
+            <Input
+              id="name"
+              element="input"
+              type="text"
+              label="Name"
+              validators={[VALIDATOR_REQUIRE()]}
+              errorText="Please enter a valid name."
+              onInput={inputHandler}
+            />
+          )}
           <Input
-            id="name"
+            id="emailAddress"
             element="input"
             type="text"
-            label="Name"
-            validators={[VALIDATOR_REQUIRE()]}
-            errorText="Please enter a valid name."
+            label="Email Address"
+            validators={[VALIDATOR_EMAIL()]}
+            errorText="Please enter a valid email address."
             onInput={inputHandler}
           />
-        )}
-        <Input
-          id="emailAddress"
-          element="input"
-          type="text"
-          label="Email Address"
-          validators={[VALIDATOR_EMAIL()]}
-          errorText="Please enter a valid email address."
-          onInput={inputHandler}
-        />
-        <Input
-          id="password"
-          element="input"
-          type="password"
-          label="Password"
-          validators={[VALIDATOR_MINLENGTH(8)]}
-          errorText="Please enter a password at least 8 characters long."
-          onInput={inputHandler}
-        />
+          <Input
+            id="password"
+            element="input"
+            type="password"
+            label="Password"
+            validators={[VALIDATOR_MINLENGTH(8)]}
+            errorText="Please enter a password at least 8 characters long."
+            onInput={inputHandler}
+          />
 
-        <Button type="submit" disabled={!formState.isValid}>
-          {isLoginMode ? "Login" : "Sign Up"}
-        </Button>
-      </form>
-      <div className="authentication__register-container">
-        {isLoginMode
-          ? " Don't have an account yet? "
-          : "Already have an account? "}
-        <p onClick={switchModeHandler}>
-          {" "}
+          <Button type="submit" disabled={!formState.isValid}>
+            {isLoginMode ? "Login" : "Sign Up"}
+          </Button>
+        </form>
+        <div className="authentication__register-container">
           {isLoginMode
-            ? "create a YourPlace Account"
-            : "login with your YourPlace Account"}
-        </p>
-      </div>
-    </Card>
+            ? " Don't have an account yet? "
+            : "Already have an account? "}
+          <p onClick={switchModeHandler}>
+            {" "}
+            {isLoginMode
+              ? "create a YourPlace Account"
+              : "login with your YourPlace Account"}
+          </p>
+        </div>
+      </Card>
+    </>
   );
 };
 
