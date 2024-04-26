@@ -12,6 +12,8 @@ import { useForm } from "../../shared/hooks/form-hook";
 import { AUTHENTICATION_CONTEXT } from "../../shared/context/auth-context";
 import "./Auth.css";
 
+import { YOUR_PLACE_API_URLS } from "../../shared/util/api";
+
 const Auth = () => {
   const auth = useContext(AUTHENTICATION_CONTEXT);
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -31,29 +33,52 @@ const Auth = () => {
   );
 
   const switchModeHandler = () => {
-    console.log(formState.isValid);
     if (!isLoginMode) {
       setFormData(
         {
           ...formState.inputs,
-          nickname: undefined,
+          name: undefined,
         },
         formState.inputs.emailAddress.isValid &&
           formState.inputs.password.isValid
       );
     } else {
       setFormData(
-        { ...formState.inputs, nickname: { value: "", isValid: false } },
+        { ...formState.inputs, name: { value: "", isValid: false } },
         false
       );
     }
     setIsLoginMode((prevMode) => !prevMode);
   };
 
-  const authSubmitFormHandler = (e) => {
+  const authSubmitFormHandler = async (e) => {
     e.preventDefault();
-    console.log("Logged In", formState.inputs);
-    auth.login()
+
+    if (isLoginMode) {
+    }
+
+    if (!isLoginMode) {
+      try {
+        const response = await fetch(YOUR_PLACE_API_URLS.SIGNUP, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: formState.inputs.name.value,
+            emailAddress: formState.inputs.emailAddress.value,
+            password: formState.inputs.password.value,
+          }),
+        })
+
+        const data = await response.json();
+        console.log(data);
+      } catch (e) {
+        console.log("ERROR", e);
+      }
+    }
+
+    auth.login();
   };
 
   return (
@@ -62,12 +87,12 @@ const Auth = () => {
       <form onSubmit={authSubmitFormHandler}>
         {!isLoginMode && (
           <Input
-            id="nickname"
+            id="name"
             element="input"
             type="text"
-            label="Nickname"
+            label="Name"
             validators={[VALIDATOR_REQUIRE()]}
-            errorText="Please enter a valid nickname."
+            errorText="Please enter a valid name."
             onInput={inputHandler}
           />
         )}
