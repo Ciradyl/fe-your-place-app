@@ -1,7 +1,6 @@
 import React from "react";
 
-import Input from "../../shared/components/FormElements/Input";
-import Button from "../../shared/components/FormElements/Button";
+import { Button, Input } from "../../shared/components/FormElements/__index__";
 import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,

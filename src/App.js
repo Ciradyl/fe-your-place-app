@@ -6,12 +6,9 @@ import {
   Switch,
 } from "react-router-dom";
 
-import Users from "./user/pages/Users";
-import NewPlace from "./places/pages/NewPlace";
-import MainNavigation from "./shared/components/Navigation/MainNavigation";
-import UserPlaces from "./places/pages/UserPlaces";
-import UpdatePlace from "./places/pages/UpdatePlace";
-import Auth from "./user/pages/Auth";
+import { NewPlace, UpdatePlace, UserPlaces } from "./places/__index__";
+import { Auth, Users } from "./user/__index__";
+import { MainNavigation } from "./shared/components/Navigation/__index__";
 import { AUTHENTICATION_CONTEXT } from "./shared/context/auth-context";
 
 const App = () => {

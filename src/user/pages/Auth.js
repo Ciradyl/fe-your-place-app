@@ -1,8 +1,7 @@
 import React, { useState, useContext } from "react";
 
-import Input from "../../shared/components/FormElements/Input";
-import Card from "../../shared/components/UIElements/Card";
-import Button from "../../shared/components/FormElements/Button";
+import { Card } from "../../shared/components/UIElements/__index__";
+import { Button, Input } from "../../shared/components/FormElements/__index__";
 import {
   VALIDATOR_EMAIL,
   VALIDATOR_MINLENGTH,
@@ -17,6 +16,8 @@ import { YOUR_PLACE_API_URLS } from "../../shared/util/api";
 const Auth = () => {
   const auth = useContext(AUTHENTICATION_CONTEXT);
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorOccured, setErrorOccured] = useState();
 
   const [formState, inputHandler, setFormData] = useForm(
     {
@@ -59,6 +60,7 @@ const Auth = () => {
 
     if (!isLoginMode) {
       try {
+        setIsLoading(true);
         const response = await fetch(YOUR_PLACE_API_URLS.SIGNUP, {
           method: "POST",
           headers: {
@@ -69,16 +71,16 @@ const Auth = () => {
             emailAddress: formState.inputs.emailAddress.value,
             password: formState.inputs.password.value,
           }),
-        })
-
+        });
         const data = await response.json();
         console.log(data);
+        setIsLoading(false);
+        auth.login();
       } catch (e) {
-        console.log("ERROR", e);
+        setIsLoading(false);
+        setErrorOccured(e.message || "Something went wrong, please try again.");
       }
     }
-
-    auth.login();
   };
 
   return (

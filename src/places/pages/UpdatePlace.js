@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom/";
 
-import Input from "../../shared/components/FormElements/Input";
-import Button from "../../shared/components/FormElements/Button";
-import Card from "../../shared/components/UIElements/Card";
+import { Button, Input } from "../../shared/components/FormElements/__index__";
+import { Card } from "../../shared/components/UIElements/__index__";
 import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
