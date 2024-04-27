@@ -12,6 +12,7 @@ import {
   VALIDATOR_REQUIRE,
 } from "../../shared/util/validators";
 import { useForm } from "../../shared/hooks/form-hook";
+import { useHttpClient } from "../../shared/hooks/http-hooks";
 import { AUTHENTICATION_CONTEXT } from "../../shared/context/auth-context";
 import "./Auth.css";
 
@@ -20,8 +21,7 @@ import { YOUR_PLACE_API_URLS } from "../../shared/util/api";
 const Auth = () => {
   const auth = useContext(AUTHENTICATION_CONTEXT);
   const [isLoginMode, setIsLoginMode] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorOccured, setErrorOccured] = useState();
+  const { isLoading, errorOccured, sendRequest, clearError } = useHttpClient();
 
   const [formState, inputHandler, setFormData] = useForm(
     {
@@ -58,69 +58,45 @@ const Auth = () => {
 
   const authSubmitFormHandler = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
 
     if (isLoginMode) {
       try {
-        const response = await fetch(YOUR_PLACE_API_URLS.LOGIN, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+        await sendRequest(
+          YOUR_PLACE_API_URLS.LOGIN,
+          "POST",
+          JSON.stringify({
             emailAddress: formState.inputs.emailAddress.value,
             password: formState.inputs.password.value,
           }),
-        });
-        const data = await response.json();
-        
-        if (!response.ok) {
-          // if not status 200
-          throw new Error(data.message);
-        }
-        setIsLoading(false);
+          {
+            "Content-Type": "application/json",
+          }
+        );
+
         auth.login();
-      } catch (e) {
-        setIsLoading(false);
-        setErrorOccured(e.message || "Something went wrong, please try again.");
-      }
+      } catch (e) {}
     }
 
     if (!isLoginMode) {
       try {
-        const response = await fetch(YOUR_PLACE_API_URLS.SIGNUP, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+        await sendRequest(
+          YOUR_PLACE_API_URLS.SIGNUP,
+          "POST",
+          JSON.stringify({
             name: formState.inputs.name.value,
             emailAddress: formState.inputs.emailAddress.value,
             password: formState.inputs.password.value,
           }),
-        });
-        const data = await response.json();
-
-        if (!response.ok) {
-          // if not status 200
-          throw new Error(data.message);
-        }
-        setIsLoading(false);
+          { "Content-Type": "application/json" }
+        );
         auth.login();
-      } catch (e) {
-        setIsLoading(false);
-        setErrorOccured(e.message || "Something went wrong, please try again.");
-      }
+      } catch (e) {}
     }
-  };
-
-  const errorHandler = () => {
-    setErrorOccured(null);
   };
 
   return (
     <>
-      <ErrorModal error={errorOccured} onClear={errorHandler} />
+      <ErrorModal error={errorOccured} onClear={clearError} />
       <Card className="authentication">
         {isLoading && <LoadingSpinner asOverlay />}
         {isLoginMode ? <h2>Log In</h2> : <h2>Create Your new Account</h2>}
