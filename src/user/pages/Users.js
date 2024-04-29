@@ -5,37 +5,23 @@ import {
   ErrorModal,
   LoadingSpinner,
 } from "../../shared/components/UIElements/__index__";
+import { useHttpClient } from "../../shared/hooks/http-hooks";
 import { YOUR_PLACE_API_URLS } from "../../shared/util/api";
-import { DUMMY_USERS } from "../DUMMY_USERS";
 
 const Users = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorOccured, setErrorOccured] = useState();
-  const [loadedUsers, setLoadedUsers] = useState();
+  const { isLoading, errorOccured, sendRequest, clearError } = useHttpClient();
+  const [loadedUsers, setLoadedUsers] = useState([]);
 
   useEffect(() => {
     const fetchRequest = async () => {
-      setIsLoading(true);
       try {
-        const response = await fetch(YOUR_PLACE_API_URLS.USERS);
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message);
-        }
-
-        setLoadedUsers(data.users);
-      } catch (e) {
-        setErrorOccured(e.message);
-      }
-      setIsLoading(false);
+        const response = await sendRequest(YOUR_PLACE_API_URLS.USERS);
+        setLoadedUsers(response.users);
+      } catch (e) {}
     };
     fetchRequest();
-  }, []);
+  }, [sendRequest]);
 
-  const errorHandler = () => {
-    setErrorOccured(null);
-  };
   return (
     <>
       {isLoading && (
@@ -43,8 +29,8 @@ const Users = () => {
           <LoadingSpinner />
         </div>
       )}
-      {!isLoading && loadedUsers && <UsersList items={loadedUsers} />}
-      <ErrorModal error={errorOccured} onClear={errorHandler} />
+      {!isLoading && loadedUsers.length > 0 && <UsersList items={loadedUsers} />}
+      <ErrorModal error={errorOccured} onClear={clearError} />
     </>
   );
 };
