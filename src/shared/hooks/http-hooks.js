@@ -22,7 +22,7 @@ export const useHttpClient = () => {
 
         const data = await response.json();
 
-        // keeps all controls except the control used in this request
+        // Remove the AbortController from the array before returning
         activeHttpRequests.current = activeHttpRequests.current.filter(
           (reqCtrl) => reqCtrl !== httpAbortCtrl
         );
@@ -49,8 +49,10 @@ export const useHttpClient = () => {
 
   useEffect(() => {
     return () => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      activeHttpRequests.current.forEach((abortCtrl) => abortCtrl.abort());
+      // Abort all active requests when the component unmounts
+      activeHttpRequests.current = activeHttpRequests.current.filter(
+        (abortCtrl) => !abortCtrl.signal.aborted
+      );
     };
   }, []);
 
