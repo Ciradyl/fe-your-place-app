@@ -61,7 +61,7 @@ const Auth = () => {
 
     if (isLoginMode) {
       try {
-        await sendRequest(
+        const response = await sendRequest(
           YOUR_PLACE_API_URLS.LOGIN,
           "POST",
           JSON.stringify({
@@ -73,13 +73,13 @@ const Auth = () => {
           }
         );
 
-        auth.login();
+        auth.login(response.user.id);
       } catch (e) {}
     }
 
     if (!isLoginMode) {
       try {
-        await sendRequest(
+        const response = await sendRequest(
           YOUR_PLACE_API_URLS.SIGNUP,
           "POST",
           JSON.stringify({
@@ -89,7 +89,7 @@ const Auth = () => {
           }),
           { "Content-Type": "application/json" }
         );
-        auth.login();
+        auth.login(response.user.id);
       } catch (e) {}
     }
   };
