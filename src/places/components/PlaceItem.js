@@ -62,7 +62,7 @@ const PlaceItem = (props) => {
             <Button inverse onClick={openMapHandler}>
               View on Map
             </Button>
-            {authContext.isLoggedIn && (
+            {authContext.userId === props.creatorId && (
               <>
                 <Button to={`/places/${props.id}`}>Edit</Button>
                 <Button onClick={showDeleteModalHandler}>Delete</Button>
