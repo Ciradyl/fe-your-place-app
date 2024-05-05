@@ -1,12 +1,22 @@
 import React, { useState, useContext } from "react";
 
 import { Button } from "../../shared/components/FormElements/__index__";
-import { Card, Map, Modal } from "../../shared/components/UIElements/__index__";
+import {
+  Card,
+  Map,
+  Modal,
+  ErrorModal,
+  LoadingSpinner,
+} from "../../shared/components/UIElements/__index__";
+import { YOUR_PLACE_API_URLS } from "../../shared/util/api";
+import { useHttpClient } from "../../shared/hooks/http-hooks";
 import { AUTHENTICATION_CONTEXT } from "../../shared/context/auth-context";
 import "./PlaceItem.css";
 
 const PlaceItem = (props) => {
-  const auth = useContext(AUTHENTICATION_CONTEXT);
+  const { isLoading, errorOccured, sendRequest, clearError } = useHttpClient();
+  const authContext = useContext(AUTHENTICATION_CONTEXT);
+
   const [showMap, setShowMap] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -21,16 +31,25 @@ const PlaceItem = (props) => {
     setShowDeleteModal(false);
   };
 
-  const deletePlaceHandler = () => {
+  const deletePlaceHandler = async () => {
     setShowDeleteModal(false);
-    console.log("Deleted");
+    try {
+      await sendRequest(
+        YOUR_PLACE_API_URLS.PLACES_GET_BY_ID + props.id,
+        "DELETE"
+      );
+      props.onDelete(props.id);
+    } catch (e) {}
   };
 
   return (
     <>
+      {/* Error Modal section */}
+      <ErrorModal erorr={errorOccured} onClear={clearError} />
       {/* Main Body */}
       <li className="place-item">
         <Card className="place-item__content">
+          {isLoading && <LoadingSpinner asOverlay />}
           <div className="place-item__image">
             <img src={props.imageUrl} alt={props.title} />
           </div>
@@ -43,7 +62,7 @@ const PlaceItem = (props) => {
             <Button inverse onClick={openMapHandler}>
               View on Map
             </Button>
-            {auth.isLoggedIn && (
+            {authContext.isLoggedIn && (
               <>
                 <Button to={`/places/${props.id}`}>Edit</Button>
                 <Button onClick={showDeleteModalHandler}>Delete</Button>
@@ -66,7 +85,6 @@ const PlaceItem = (props) => {
           <Map center={props.coordinates} zoom={15} />
         </div>
       </Modal>
-
       {/* Deletion Modal section */}
       <Modal
         show={showDeleteModal}
