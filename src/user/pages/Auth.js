@@ -5,7 +5,11 @@ import {
   ErrorModal,
   LoadingSpinner,
 } from "../../shared/components/UIElements/__index__";
-import { Button, Input } from "../../shared/components/FormElements/__index__";
+import {
+  Button,
+  Input,
+  ImageUpload,
+} from "../../shared/components/FormElements/__index__";
 import {
   VALIDATOR_EMAIL,
   VALIDATOR_MINLENGTH,
@@ -112,6 +116,7 @@ const Auth = () => {
               onInput={inputHandler}
             />
           )}
+          {!isLoginMode && <ImageUpload center id="image" />}
           <Input
             id="emailAddress"
             element="input"
