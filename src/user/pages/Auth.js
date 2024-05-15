@@ -68,8 +68,6 @@ const Auth = () => {
   const authSubmitFormHandler = async (e) => {
     e.preventDefault();
 
-    console.log(formState.inputs);
-
     if (isLoginMode) {
       try {
         const response = await sendRequest(
@@ -90,16 +88,19 @@ const Auth = () => {
 
     if (!isLoginMode) {
       try {
+        const formData = new FormData();
+        formData.append("name", formState.inputs.name.value);
+        formData.append("image", formState.inputs.image.value);
+        formData.append("emailAddress", formState.inputs.emailAddress.value);
+        formData.append("password", formState.inputs.password.value);
+
         const response = await sendRequest(
           YOUR_PLACE_API_URLS.SIGNUP,
           "POST",
-          JSON.stringify({
-            name: formState.inputs.name.value,
-            emailAddress: formState.inputs.emailAddress.value,
-            password: formState.inputs.password.value,
-          }),
-          { "Content-Type": "application/json" }
+          formData,
+          {}
         );
+
         auth.login(response.user.id);
       } catch (e) {}
     }
