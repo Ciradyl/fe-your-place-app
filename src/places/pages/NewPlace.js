@@ -1,7 +1,11 @@
 import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 
-import { Button, Input } from "../../shared/components/FormElements/__index__";
+import {
+  Button,
+  Input,
+  ImageUpload,
+} from "../../shared/components/FormElements/__index__";
 import {
   ErrorModal,
   LoadingSpinner,
@@ -33,27 +37,29 @@ const NewPlace = () => {
         value: "",
         isValid: false,
       },
+      image: {
+        value: null,
+        isValid: false,
+      },
     },
     false
   );
 
-  const placeHistory = useHistory()
+  const placeHistory = useHistory();
 
   const placeSubmitHandler = async (e) => {
     e.preventDefault();
     try {
-      await sendRequest(
-        YOUR_PLACE_API_URLS.PLACES,
-        "POST",
-        JSON.stringify({
-          title: formState.inputs.title.value,
-          description: formState.inputs.description.value,
-          address: formState.inputs.address.value,
-          creatorId: authContext.userId,
-        }),
-        { "Content-Type": "application/json" }
-      );
-      placeHistory.push(YOUR_PLACE_API_URLS.HOME)
+      const formData = new FormData();
+      formData.append("title", formState.inputs.title.value);
+      formData.append("description", formState.inputs.description.value);
+      formData.append("address", formState.inputs.address.value);
+      formData.append("creatorId", authContext.userId);
+      formData.append("image", formState.inputs.image.value);
+
+      await sendRequest(YOUR_PLACE_API_URLS.PLACES, "POST", formData);
+
+      placeHistory.push(YOUR_PLACE_API_URLS.HOME);
     } catch (e) {}
   };
 
@@ -62,6 +68,13 @@ const NewPlace = () => {
       <ErrorModal error={errorOccured} onClear={clearError} />
       <form className="place-form" onSubmit={placeSubmitHandler}>
         {isLoading && <LoadingSpinner asOverlay />}
+        <ImageUpload
+          center
+          id="image"
+          onInput={inputHandler}
+          errorText="Please provide an image."
+        />
+
         <Input
           id="title"
           element="input"

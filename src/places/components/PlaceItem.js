@@ -41,7 +41,6 @@ const PlaceItem = (props) => {
       props.onDelete(props.id);
     } catch (e) {}
   };
-
   return (
     <>
       {/* Error Modal section */}
@@ -51,7 +50,7 @@ const PlaceItem = (props) => {
         <Card className="place-item__content">
           {isLoading && <LoadingSpinner asOverlay />}
           <div className="place-item__image">
-            <img src={props.imageUrl} alt={props.title} />
+            <img src={YOUR_PLACE_API_URLS.BE + props.image} alt={props.title} />
           </div>
           <div className="place-item__info">
             <h2>{props.title}</h2>
