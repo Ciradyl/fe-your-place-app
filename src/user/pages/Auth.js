@@ -82,7 +82,7 @@ const Auth = () => {
           }
         );
 
-        auth.login(response.user.id);
+        auth.login(response.userId, response.token);
       } catch (e) {}
     }
 
@@ -101,7 +101,7 @@ const Auth = () => {
           {}
         );
 
-        auth.login(response.user.id);
+        auth.login(response.userId, response.token);
       } catch (e) {}
     }
   };
