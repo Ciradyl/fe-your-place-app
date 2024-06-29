@@ -5,6 +5,8 @@ import { Button } from "../../shared/components/FormElements/__index__";
 import PlaceItem from "./PlaceItem";
 import "./PlaceList.css";
 
+//TODO: Create a state where the share place button is only shown if its their own places. not others
+
 const PlaceList = (props) => {
   return (
     <>
